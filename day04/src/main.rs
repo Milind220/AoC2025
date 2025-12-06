@@ -18,7 +18,7 @@ const DIRS: [(isize, isize); 8] = [
 ];
 
 
-fn count_neighbours(grid: Vec<Vec<char>>, r: usize, c: usize) -> u8 {
+fn count_neighbours(grid: &[Vec<char>], r: usize, c: usize) -> u8 {
     let rows = grid.len();
     let cols = grid[0].len();
 
@@ -32,21 +32,36 @@ fn count_neighbours(grid: Vec<Vec<char>>, r: usize, c: usize) -> u8 {
         .count() as u8
 }
 
+fn find_accessible_rolls(grid: &[Vec<char>]) ->  Vec<(usize, usize)> {
+    let mut accessible = Vec::new();
+    let rows = grid.len();
+    let cols = grid[0].len();
 
-fn part1(input: &str) -> usize {
-    let grid = parse_grid(&input);
-
-    let mut forkliftable_rolls = 0;
-    for (r, row) in grid.iter().enumerate() {
-        for (c, _) in row.iter().enumerate() {
-            let neighbours = count_neighbours(grid.clone(), r, c);
-            if neighbours < 4 && grid[r][c] == '@'{
-                forkliftable_rolls += 1
+    for r in 0..rows {
+        for c in 0..cols {
+            if grid[r][c] == '@' && count_neighbours(grid, r, c) < 4 {
+                accessible.push((r, c));
             }
         }
     }
 
-    forkliftable_rolls
+    accessible
+}
+
+
+fn part1(input: &str) -> usize {
+    let grid = parse_grid(input);
+    let mut count = 0;
+
+    for (r, row) in grid.iter().enumerate() {
+        for (c, cell) in row.iter().enumerate() {
+            if *cell == '@' && count_neighbours(&grid, r, c) < 4 {
+                count += 1;
+            }
+        }
+    }
+
+    count
 }
 /*
 fn part2(input: &str) -> usize { todo! () }
