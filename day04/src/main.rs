@@ -1,3 +1,5 @@
+type Grid = Vec<Vec<u8>>;
+
 fn parse_grid(s: &str) -> Vec<Vec<char>> {
     let mut parsed_grid = Vec::new();
     for line in s.lines() {
@@ -63,16 +65,28 @@ fn part1(input: &str) -> usize {
 
     count
 }
-/*
-fn part2(input: &str) -> usize { todo! () }
-*/
+
+fn count_neighbors_bit(grid: &[Vec<u8>], r: usize, c: usize) -> u8 {
+    let rows = grid.len();
+    let cols = grid[0].len();
+
+    DIRS.iter()
+        .filter_map(|&(dr, dc)| {
+            let nr = r.checked_add_signed(dr)?;
+            let nc = c.checked_add_signed(dc)?;
+            (nr < rows && nc < cols).then(|| grid[nr][nc])
+        })
+        .filter(|&cell| cell == 1)
+        .count() as u8
+}
+
+fn part2(input: &str) -> usize {
+}
 
 fn main() {
     let input = std::fs::read_to_string("day04/input.txt").unwrap();
     println!("Part 1: {}", part1(&input));
-    /*
     println!("Part 2: {}", part2(&input));
-*/
 }
 
 #[cfg(test)]
