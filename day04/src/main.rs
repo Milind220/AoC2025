@@ -22,16 +22,14 @@ fn count_neighbours(grid: Vec<Vec<char>>, r: usize, c: usize) -> u8 {
     let rows = grid.len();
     let cols = grid[0].len();
 
-    let neighbours = DIRS.iter()
+    DIRS.iter()
         .filter_map(|&(dr, dc)| {
             let nr = r.checked_add_signed(dr)?;
             let nc = c.checked_add_signed(dc)?;
             (nr < rows && nc < cols).then(|| grid[nr][nc])
         })
         .filter(|&cell| cell == '@')
-        .count();
-
-    neighbours as u8
+        .count() as u8
 }
 
 
