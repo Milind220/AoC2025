@@ -18,7 +18,10 @@ const DIRS: [(isize, isize); 8] = [
 ];
 
 
-fn count_neighbours(grid: Vec<Vec<char>>, r: usize, c: usize, rows: usize, cols: usize) -> u8 {
+fn count_neighbours(grid: Vec<Vec<char>>, r: usize, c: usize) -> u8 {
+    let rows = grid.len();
+    let cols = grid[0].len();
+
     let neighbours = DIRS.iter()
         .filter_map(|&(dr, dc)| {
             let nr = r.checked_add_signed(dr)?;
@@ -34,13 +37,11 @@ fn count_neighbours(grid: Vec<Vec<char>>, r: usize, c: usize, rows: usize, cols:
 
 fn part1(input: &str) -> usize {
     let grid = parse_grid(&input);
-    let rows = grid.len();
-    let cols = grid[0].len();
 
     let mut forkliftable_rolls = 0;
     for (r, row) in grid.iter().enumerate() {
         for (c, _) in row.iter().enumerate() {
-            let neighbours = count_neighbours(grid.clone(), r, c, rows, cols);
+            let neighbours = count_neighbours(grid.clone(), r, c);
             if neighbours < 4 && grid[r][c] == '@'{
                 forkliftable_rolls += 1
             }
