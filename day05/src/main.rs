@@ -53,18 +53,30 @@ fn part1_hashset(input: &str) -> u64 {
     available.iter().filter(|&&id| fresh_ids.contains(&id)).count() as u64
 }
 
-/*
-fn part2(input: &str) -> usize {
-    todo!()
+pub fn part2(input: &str) -> u64 {
+    let (fresh_ranges, _) = parse_input(input);
+
+    let mut ranges: Vec<(u64, u64)> = fresh_ranges;
+    ranges.sort_by_key(|r| r.0);
+
+    let mut merged = Vec::new();
+    for range in ranges {
+        match merged.last_mut() {
+            None => merged.push(range),
+            Some(last) if last.1 >= range.0 => {
+                last.1 = last.1.max(range.1);
+            }
+            Some(_) => merged.push(range),
+        }
+    }
+
+    merged.iter().map(|&(lo, hi)| hi - lo + 1).sum()
 }
-*/
 
 fn main() {
     let input = std::fs::read_to_string("day05/input.txt").unwrap();
     println!("Part 1: {}", part1(&input));
-    /*
     println!("Part 2: {}", part2(&input));
-*/
 }
 
 #[cfg(test)]
@@ -75,10 +87,8 @@ mod tests {
     fn test_part1() {
         assert_eq!(part1(INPUT), 0);
     }
-    /*
     #[test]
     fn test_part2() {
         assert_eq!(part2(INPUT), 0);
     }
-    */
 }
