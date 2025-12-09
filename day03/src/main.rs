@@ -10,22 +10,22 @@ fn parse_batt_banks(s: &str) -> Vec<&[u8]> {
 fn get_highest_2_battery_joltage(bank: &[u8]) -> u64 {
     let bank_len = bank.len();
     let max_digit = bank.iter().max().unwrap();
-    let leftmost_pos = bank.iter().position(|&b| b==*max_digit).unwrap();
+    let leftmost_pos = bank.iter().position(|&b| b == *max_digit).unwrap();
 
-    if leftmost_pos==bank.len()-1 {
-        let left_digit = bank[..bank_len-1].iter().max().unwrap();
-        return (((left_digit - b'0') * 10u8) + (max_digit - b'0')) as u64;
+    if leftmost_pos == bank.len() - 1 {
+        let left_digit = bank[..bank_len - 1].iter().max().unwrap();
+        (((left_digit - b'0') * 10u8) + (max_digit - b'0')) as u64
     } else {
-        let right_max = bank[leftmost_pos+1..].iter().max().unwrap();
-        return (((max_digit - b'0') * 10u8) + (right_max - b'0')) as u64;
+        let right_max = bank[leftmost_pos + 1..].iter().max().unwrap();
+        (((max_digit - b'0') * 10u8) + (right_max - b'0')) as u64
     }
 }
 
-fn get_highest_n_battery_joltage(bank: &[u8], n: usize) -> u64{
+fn get_highest_n_battery_joltage(bank: &[u8], n: usize) -> u64 {
     let bank_len = bank.len();
     let mut highest_n_battery_joltage = 0u64;
     let mut pos = 0usize;
-    
+
     for i in 0..n {
         // We need to leave enough digits after this one to be able to still pick n digits total.
         // We need (n - i - 1) digits after this one.
@@ -34,7 +34,7 @@ fn get_highest_n_battery_joltage(bank: &[u8], n: usize) -> u64{
         let slice = &bank[pos..=last_possible];
 
         let best_digit = slice.iter().max().unwrap();
-        let best_digit_index_in_slice = slice.iter().position(|&b| b==*best_digit).unwrap();
+        let best_digit_index_in_slice = slice.iter().position(|&b| b == *best_digit).unwrap();
         let best_digit_index = pos + best_digit_index_in_slice;
 
         highest_n_battery_joltage = highest_n_battery_joltage * 10 + (best_digit - b'0') as u64;
@@ -44,7 +44,7 @@ fn get_highest_n_battery_joltage(bank: &[u8], n: usize) -> u64{
 }
 
 fn part1(input: &str) -> usize {
-    let battery_banks = parse_batt_banks(&input);
+    let battery_banks = parse_batt_banks(input);
     let mut joltage = 0u64;
 
     for bank in battery_banks {
@@ -56,7 +56,7 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    let battery_banks = parse_batt_banks(&input);
+    let battery_banks = parse_batt_banks(input);
     let mut joltage = 0u64;
 
     for bank in battery_banks {
@@ -76,6 +76,12 @@ fn main() {
 mod tests {
     use super::*;
     const INPUT: &str = include_str!("../test.txt");
-    #[test] fn test_part1() { assert_eq!(part1(INPUT), 0); }
-    #[test] fn test_part2() { assert_eq!(part2(INPUT), 0); }
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(INPUT), 0);
+    }
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(INPUT), 0);
+    }
 }
