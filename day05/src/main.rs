@@ -34,7 +34,10 @@ fn part1(input: &str) -> u64 {
 
     let mut count = 0;
     for &ingredient in &available {
-        if fresh_ranges.iter().any(|&(lo, hi)| ingredient >= lo && ingredient <= hi) {
+        if fresh_ranges
+            .iter()
+            .any(|&(lo, hi)| ingredient >= lo && ingredient <= hi)
+        {
             count += 1;
         }
     }
@@ -50,7 +53,10 @@ fn part1_hashset(input: &str) -> u64 {
         fresh_ids.extend(lo..=hi);
     }
 
-    available.iter().filter(|&&id| fresh_ids.contains(&id)).count() as u64
+    available
+        .iter()
+        .filter(|&&id| fresh_ids.contains(&id))
+        .count() as u64
 }
 
 pub fn part2(input: &str) -> u64 {

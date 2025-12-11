@@ -1,6 +1,9 @@
-use std::io::{stdout, Write};
-use std::thread::sleep;
-use std::time::Duration;
+#[cfg(feature = "vis")]
+use {
+    std::io::{Write, stdout},
+    std::thread::sleep,
+    std::time::Duration,
+};
 
 type Grid = Vec<Vec<u8>>; // 1 = roll exists, 0 = empty.
 
@@ -16,7 +19,12 @@ const DIRS: [(isize, isize); 8] = [
 ];
 
 #[cfg(feature = "vis")]
-fn visualize_step(grid: &[Vec<u8>], to_remove: &[(usize, usize)], step: usize, total_removed: usize) {
+fn visualize_step(
+    grid: &[Vec<u8>],
+    to_remove: &[(usize, usize)],
+    step: usize,
+    total_removed: usize,
+) {
     let mut stdout = stdout();
     print!("\x1B[2J\x1B[1;1H");
     println!("Step {step} | Total removed {total_removed}\n");
@@ -25,12 +33,11 @@ fn visualize_step(grid: &[Vec<u8>], to_remove: &[(usize, usize)], step: usize, t
         for (c, &cell) in row.iter().enumerate() {
             let ch = if cell == 1 {
                 if to_remove.contains(&(r, c)) {
-                    "\x1B[1;31m@\x1B[0m"  // Bright red @ = DOOM APPROACHES
+                    "\x1B[1;31m@\x1B[0m" // Bright red @ = DOOM APPROACHES
                 } else {
-                   "\x1B[32m@\x1B[0m"     // Green = still safe 
+                    "\x1B[32m@\x1B[0m" // Green = still safe 
                 }
-            }
-            else {
+            } else {
                 "."
             };
             print!("{ch}");
@@ -38,11 +45,13 @@ fn visualize_step(grid: &[Vec<u8>], to_remove: &[(usize, usize)], step: usize, t
         println!();
     }
     println!();
-    println!("\x1B[32m@\x1B[0m = paper roll | \x1B[1;31m@\x1B[0m = about to be forklift'd | . = empty");
+    println!(
+        "\x1B[32m@\x1B[0m = paper roll | \x1B[1;31m@\x1B[0m = about to be forklift'd | . = empty"
+    );
     println!("Press Ctrl+C to quit early!");
 
     stdout.flush().unwrap();
-    sleep(Duration::from_millis(100));  // 12 FPS
+    sleep(Duration::from_millis(100)); // 12 FPS
 }
 
 fn parse_grid(s: &str) -> Vec<Vec<char>> {
@@ -119,7 +128,11 @@ fn part2(input: &str) -> usize {
     }
 
     loop {
-        step += 1;
+        #[cfg(feature = "vis")]
+        {
+            step += 1;
+        }
+
         let mut to_remove = Vec::new();
 
         for (r, row) in grid.iter().enumerate() {
@@ -137,7 +150,7 @@ fn part2(input: &str) -> usize {
                 sleep(Duration::from_secs(2));
             }
             break;
-        } 
+        }
         total += to_remove.len();
 
         #[cfg(feature = "vis")]
